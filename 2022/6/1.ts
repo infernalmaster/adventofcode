@@ -5,31 +5,29 @@ const f = await Deno.readTextFile(path.join(__dirname, "input.txt"));
 
 let i = 0;
 
-const distinctLength = 4;
+const uniqSize = 4;
 
 while (i < f.length) {
-  const words: string[] = [];
+  const words: Map<string, number> = new Map();
 
-  for (let j = 0; j < distinctLength; j++) {
+  for (let j = 0; j < uniqSize; j++) {
     const char = f[i + j];
 
-    const sameCharIndex = words.indexOf(char);
-
-    if (sameCharIndex === -1) {
-      words.push(char);
-    } else {
-      i += sameCharIndex;
+    if (words.has(char)) {
+      i += words.get(char) as number;
       break;
+    } else {
+      words.set(char, j);
     }
   }
 
-  if (words.length === distinctLength) {
+  if (words.size === uniqSize) {
     break;
   }
 
   i++;
 }
 
-const answer = i + distinctLength;
+const answer = i + uniqSize;
 
 console.log(answer);

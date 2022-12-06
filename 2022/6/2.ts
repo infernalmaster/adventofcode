@@ -8,22 +8,9 @@ let i = 0;
 const distinctLength = 14;
 
 while (i < f.length) {
-  const words: string[] = [];
-
-  for (let j = 0; j < distinctLength; j++) {
-    const char = f[i + j];
-
-    const sameCharIndex = words.indexOf(char);
-
-    if (sameCharIndex === -1) {
-      words.push(char);
-    } else {
-      i += sameCharIndex;
-      break;
-    }
-  }
-
-  if (words.length === distinctLength) {
+  if (
+    new Set(f.slice(i, i + distinctLength).split("")).size === distinctLength
+  ) {
     break;
   }
 
