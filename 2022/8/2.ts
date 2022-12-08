@@ -5,13 +5,11 @@ const f = await Deno.readTextFile(path.join(__dirname, "input.txt"));
 
 interface Tree {
   height: number;
-  visible: boolean;
 }
 
 const forest: Tree[][] = f.slice(0, -1).split("\n").map((row) =>
   row.split("").map((height) => ({
     height: Number(height),
-    visible: false,
   }))
 );
 
