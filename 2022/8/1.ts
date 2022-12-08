@@ -8,82 +8,48 @@ interface Tree {
   visible: boolean;
 }
 
-const forest: Tree[][] = f.slice(0, -1).split("\n").map((row, y, rows) =>
-  row.split("").map((height, x, columns) => ({
+const forest: Tree[][] = f.slice(0, -1).split("\n").map((row) =>
+  row.split("").map((height) => ({
     height: Number(height),
-    visible: x === 0 || x === columns.length - 1 ||
-      y === 0 || y === rows.length - 1,
+    visible: false,
   }))
 );
 
-const height = forest.length;
-const width = forest[0].length;
-
-for (let x = 1; x < width - 1; x++) {
-  // trace ray top-bot
-  let y = 1;
-  let max = forest[y - 1][x].height;
-  for (; y < height - 1; y++) {
-    const tree = forest[y][x];
-
-    if (tree.height > max) {
-      max = tree.height;
-      tree.visible = true;
-    }
+const populateVisibility = (tree: Tree, max: number): number => {
+  if (tree.height > max) {
+    max = tree.height;
+    tree.visible = true;
   }
+  return max;
+};
+
+for (let x = 0; x < forest[0].length; x++) {
+  // trace ray top-bot
+  forest.reduce((max, row) => populateVisibility(row[x], max), -1);
 
   // trace ray bot-top
-  y = height - 2;
-  max = forest[y + 1][x].height;
-  for (; y > 0; y--) {
-    const tree = forest[y][x];
-
-    if (tree.height > max) {
-      max = tree.height;
-      tree.visible = true;
-    }
-  }
+  forest
+    .slice().reverse()
+    .reduce((max, row) => populateVisibility(row[x], max), -1);
 }
 
-for (let y = 1; y < height - 1; y++) {
+for (let y = 0; y < forest.length; y++) {
   // trace ray left-right
-  let x = 1;
-  let max = forest[y][x - 1].height;
-
-  for (; x < width - 1; x++) {
-    const tree = forest[y][x];
-
-    if (tree.height > max) {
-      max = tree.height;
-      tree.visible = true;
-    }
-  }
+  forest[y].reduce((max, tree) => populateVisibility(tree, max), -1);
 
   // trace ray right-left
-  x = width - 2;
-  max = forest[y][x + 1].height;
-  for (; x > 0; x--) {
-    const tree = forest[y][x];
-
-    if (tree.height > max) {
-      max = tree.height;
-      tree.visible = true;
-    }
-  }
+  forest[y]
+    .slice().reverse()
+    .reduce((max, tree) => populateVisibility(tree, max), -1);
 }
 
 let sum = 0;
-for (let y = 0; y < height; y++) {
-  for (let x = 0; x < width; x++) {
+for (let y = 0; y < forest.length; y++) {
+  for (let x = 0; x < forest[0].length; x++) {
     if (forest[y][x].visible) {
       sum++;
     }
   }
 }
 
-// console.log(forest.map((r) => r.map((c) => c.height).join("")).join("\n"));
-// console.log(" ");
-// console.log(
-//   forest.map((r) => r.map((c) => c.visible ? 1 : 0).join("")).join("\n"),
-// );
 console.log(sum);
