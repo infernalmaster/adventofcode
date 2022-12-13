@@ -13,7 +13,7 @@ const nextCycle = () => {
   if (pixel === value || pixel === value - 1 || pixel === value + 1) {
     row += "#";
   } else {
-    row += ".";
+    row += "█";
   }
 
   if (pixel === 39) {
